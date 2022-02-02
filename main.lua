@@ -1,8 +1,9 @@
-Shapes = require 'shapes'
+Shape = require 'shapes'
 Grid = require 'grid'
 
 function love.load()
   grid = Grid:new()
+  shape = Shape:new(grid.c, grid.r, grid.size)
 end 
 
 function love.keypressed(key)
@@ -13,4 +14,9 @@ end
 
 function love.draw()
   grid:draw()
+  shape:draw()
+end 
+
+function love.update(dt)
+  shape:update(dt)
 end 
