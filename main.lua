@@ -9,6 +9,7 @@ end
 function love.keypressed(key)
   if key == 'escape' then 
     love.window.close()
+    os.exit()
   end 
 end 
 
