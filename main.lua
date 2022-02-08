@@ -19,5 +19,5 @@ function love.draw()
 end 
 
 function love.update(dt)
-  shape:update(dt)
+  --shape:update(dt)
 end 

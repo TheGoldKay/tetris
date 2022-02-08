@@ -21,6 +21,13 @@ local z = {
 
 table.insert(rot, z)
 
+local s = {
+  {{0, 0}, {-1, 0}, {-1, -1}, {0, 1}}, 
+  {{0, 0}, {-1, 0}, {0, -1}, {1, -1}}
+}
+
+table.insert(rot, s)
+
 local o = {
   {{0, 0}, {-1, 1}, {0, 1}, {-1, 0}}
 }
@@ -45,9 +52,9 @@ function Shape:new(columns, rows, size)
   self.clock = 0
   self.timer = 0.7
   -- select a shape at random
-  self.s = rot[4][2]
+  self.s = {{0, 0}, {-1, 1}, {-1, 0}, {0, -1}}
   
-  self.s[1] = {self.c / 2, 1}
+  self.s[1] = {self.c / 2, self.r / 2}
   --print(self.s[1], self.s[2], self.s[3], self.s[4])
   return o 
 end 
