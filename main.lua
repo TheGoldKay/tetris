@@ -10,6 +10,8 @@ function love.keypressed(key)
   if key == 'escape' then 
     love.window.close()
     os.exit()
+  elseif key == 'space' then 
+    shape:rotate()
   end 
 end 
 
