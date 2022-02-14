@@ -5,41 +5,41 @@ local rot = {}
 -- when drawing the piece the positions of the other boxes will be determined
 -- by an offeset in relation to the center
 
-local l = {
-    {{0, 0}, {-1, 1}, {0, -1}, {0, 1}},
-    {{0, 0}, {-1, 1}, {-1, 0}, {1, 0}},
-    {{0, 0}, {1, 1}, {0, 1}, {0, -1}},
-    {{0, 0}, {-1, 0}, {1, 0}, {1, -1}}}
-
-table.insert(rot, l)
-    
-local z = {
-    {{0, 0}, {-1, 1}, {-1, 0}, {0, -1}},
-    {{0, 0}, {-1, 0}, {0, 1}, {1, 1}},
-    {{0, 0}, {0, 1}, {1, 0}, {1, -1}}, 
-    {{0, 0}, {-1, -1}, {0, -1}, {1, 0}}}
-
-table.insert(rot, z)
-
 local s = {
-  {{0, 0}, {-1, 0}, {-1, -1}, {0, 1}}, 
-  {{0, 0}, {-1, 0}, {0, -1}, {1, -1}}
+  {{0, 0}, {-1, 1}, {-1, 0}, {0, -1}},
+  {{0, 0}, {-1, -1}, {0, -1}, {1, 0}}
 }
 
 table.insert(rot, s)
 
+local z = {
+  {{0, 0}, {-1, -1}, {-1, 0}, {0, 1}},
+  {{0, 0}, {-1, 0}, {0, -1}, {1, -1}}
+}
+
+table.insert(rot, z)
+
+local t = {
+  {{0, 0}, {-1, 0}, {1, 0}, {0, 1}},
+  {{0, 0}, {-1, 0}, {1, 0}, {0, -1}},
+  {{0, 0}, {0, -1}, {0, 1}, {1, 0}},
+  {{0, 0}, {0, -1}, {0, 1}, {-1, 0}}
+}
+
+table.insert(rot, t)
+
+local l = {
+  {{0, 0}, {1, 0}, {-1, 0}, {-2, 0}},
+  {{0, 0}, {0, 1}, {0, -1}, {0, -2}}
+}
+
+table.insert(rot, l)
+
 local o = {
-  {{0, 0}, {-1, 1}, {0, 1}, {-1, 0}}
+  {{0, 0}, {-1, 0}, {-1, -1}, {0, -1}}
 }
 
 table.insert(rot, o)
-
-local line = {
-  {{0, 0}, {-2, 0}, {-1, 0}, {1, 0}},
-  {{0, 0}, {0, 2}, {0, 1}, {0, -1}}
-}
-
-table.insert(rot, line)
 
 local Shape = {}
 function Shape:new(columns, rows, size)
@@ -52,7 +52,7 @@ function Shape:new(columns, rows, size)
   self.clock = 0
   self.timer = 0.7
   -- select a shape at random
-  self.s = {{0, 0}, {-1, 1}, {-1, 0}, {0, -1}}
+  self.s = rot[5][1]
   
   self.s[1] = {self.c / 2, self.r / 2}
   --print(self.s[1], self.s[2], self.s[3], self.s[4])
