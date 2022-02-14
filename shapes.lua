@@ -60,7 +60,7 @@ function Shape:new(columns, rows, size)
   return o 
 end 
 
-function Shape:draw()
+function Shape:pos()
   local x = self.sp[self.face][1][1]
   local y = self.sp[self.face][1][2]
   local x1 = x + self.sp[self.face][2][1]
@@ -69,16 +69,21 @@ function Shape:draw()
   local y2 = y + self.sp[self.face][3][2]
   local x3 = x + self.sp[self.face][4][1]
   local y3 = y + self.sp[self.face][4][2]
+  return {{x, y}, {x1, y1}, {x2, y2}, {x3, y3}}
+end 
+
+function Shape:draw()
+  local p = self:pos()
   love.graphics.setColor(0, 0.5, 0.5)
-  love.graphics.rectangle('fill', x * self.size, y * self.size, self.size, self.size)
-  love.graphics.rectangle('fill', x1 * self.size, y1 * self.size, self.size, self.size)
-  love.graphics.rectangle('fill', x2 * self.size, y2 * self.size, self.size, self.size)
-  love.graphics.rectangle('fill', x3 * self.size, y3 * self.size, self.size, self.size)
+  love.graphics.rectangle('fill', p[1][1] * self.size, p[1][2] * self.size, self.size, self.size)
+  love.graphics.rectangle('fill', p[2][1] * self.size, p[2][2] * self.size, self.size, self.size)
+  love.graphics.rectangle('fill', p[3][1] * self.size, p[3][2] * self.size, self.size, self.size)
+  love.graphics.rectangle('fill', p[4][1] * self.size, p[4][2] * self.size, self.size, self.size)
   love.graphics.setColor(1, 1, 1)
-  love.graphics.rectangle('line', x * self.size, y * self.size, self.size, self.size)
-  love.graphics.rectangle('line', x1 * self.size, y1 * self.size, self.size, self.size)
-  love.graphics.rectangle('line', x2 * self.size, y2 * self.size, self.size, self.size)
-  love.graphics.rectangle('line', x3 * self.size, y3 * self.size, self.size, self.size)
+  love.graphics.rectangle('line', p[1][1] * self.size, p[1][2] * self.size, self.size, self.size)
+  love.graphics.rectangle('line', p[2][1] * self.size, p[2][2] * self.size, self.size, self.size)
+  love.graphics.rectangle('line', p[3][1] * self.size, p[3][2] * self.size, self.size, self.size)
+  love.graphics.rectangle('line', p[4][1] * self.size, p[4][2] * self.size, self.size, self.size)
   love.graphics.setColor(0.3, 0.2, 0)
 end 
 
@@ -91,16 +96,47 @@ function Shape:rotate()
   self.sp[self.face][1] = old_pos
 end 
 
-function Shape:update(dt)
+function Shape:shift()
+  --math.randomseed(os.time())
+  self.sp = rot[math.random(#rot)]
+  self.face = 1 -- first rotation
+  -- assign the pivot (center / origin) the initial position
+  self.sp[self.face][1] = {self.c / 2, self.r / 2}
+end 
+
+function Shape:on(p, x, y)
+  if p[1][1] == x or p[1][2] == y or p[2][1] == x or p[2][2] == y or p[3][1] == x or p[3][3] == y or p[4][1] == x or p[4][2] == y then 
+    return true 
+  end 
+  return false 
+end 
+
+function Shape:stop(grid)
+  local p = self:pos()
+  for _, line in ipairs(grid) do 
+    for _, box in ipairs(line) do 
+      if box.val == 1 then 
+        if self:on(p, box.x, box.y) then 
+          return true 
+        end 
+      end 
+    end 
+  end
+  return false  
+end 
+
+function Shape:add(grid)
+  local p = self:pos()
+  grid[p]
+
+function Shape:update(dt, grid)
   self.clock = self.clock + dt 
   if self.clock >= self.timer then 
-    self.s[1][2] = self.s[1][2] + 1
+    self.sp[self.face][1][2] = self.sp[self.face][1][2] + 1
     self.clock = 0
   end
-  if self.s[1][2] > self.r then 
-    self.s = rot[math.random(#rot)]
-    self.s[1] = {self.c / 1, 1}
-  end 
+  local p = self:pos()
+
 end 
 
 return Shape 

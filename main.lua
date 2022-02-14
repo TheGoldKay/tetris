@@ -12,6 +12,8 @@ function love.keypressed(key)
     os.exit()
   elseif key == 'space' then 
     shape:rotate()
+  elseif key == 'j' then 
+    shape:shift()
   end 
 end 
 
