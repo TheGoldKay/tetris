@@ -12,8 +12,10 @@ function love.keypressed(key)
     os.exit()
   elseif key == 'space' then 
     shape:rotate()
-  elseif key == 'j' then 
-    shape:shift()
+  elseif key == 'left' or key == 'a' then 
+    shape:left_step()
+  elseif key == 'right' or key == 'd' then 
+    shape:right_step()
   end 
 end 
 
@@ -23,5 +25,5 @@ function love.draw()
 end 
 
 function love.update(dt)
-  --shape:update(dt)
+  grid = shape:update(dt, grid)
 end 

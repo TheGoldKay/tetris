@@ -22,13 +22,31 @@ function Grid:new()
   return o 
 end 
 
+function Grid:set(row, col)
+  self.boxes[row][col+1].val = 1 
+end 
+
+function Grid:filled(x, y)
+  if x < self.c and y < self.r then 
+    return self.boxes[y][x].val == 1
+  end 
+  return false 
+end 
+
 function Grid:draw()
   for _, line in ipairs(self.boxes) do 
     for _, box in ipairs(line) do 
-      local mode = box.val == 1 and  "fill" or "line"
       local x = box.c * self.size 
       local y = box.r * self.size 
-      love.graphics.rectangle(mode, x, y, self.size, self.size)
+      if box.val == 1 then 
+        love.graphics.setColor(0, 0.5, 0.5)
+        love.graphics.rectangle('fill', x, y, self.size, self.size)
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.rectangle('line', x, y, self.size, self.size)
+        love.graphics.setColor(0.3, 0.2, 0)
+      else 
+        love.graphics.rectangle('line', x, y, self.size, self.size)
+      end 
     end 
   end 
 end 

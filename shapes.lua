@@ -50,15 +50,20 @@ function Shape:new(columns, rows, size)
   self.r = rows 
   self.size = size 
   self.clock = 0
-  self.timer = 0.7
+  self.timer = 0.2--0.7
   -- select a shape at random
   math.randomseed(os.time())
+  self:new_shape()
+  return o 
+end 
+
+function Shape:new_shape()
   self.sp = rot[math.random(#rot)]
   self.face = 1 -- first rotation
   -- assign the pivot (center / origin) the initial position
-  self.sp[self.face][1] = {self.c / 2, self.r / 2}
-  return o 
+  self.sp[self.face][1] = {self.c / 2, 1}
 end 
+
 
 function Shape:pos()
   local x = self.sp[self.face][1][1]
@@ -70,6 +75,14 @@ function Shape:pos()
   local x3 = x + self.sp[self.face][4][1]
   local y3 = y + self.sp[self.face][4][2]
   return {{x, y}, {x1, y1}, {x2, y2}, {x3, y3}}
+end 
+
+function Shape:left_step()
+  self.sp[self.face][1][1] = self.sp[self.face][1][1] - 1
+end 
+
+function Shape:right_step()
+  self.sp[self.face][1][1] = self.sp[self.face][1][1] + 1
 end 
 
 function Shape:draw()
@@ -96,38 +109,26 @@ function Shape:rotate()
   self.sp[self.face][1] = old_pos
 end 
 
-function Shape:shift()
-  --math.randomseed(os.time())
-  self.sp = rot[math.random(#rot)]
-  self.face = 1 -- first rotation
-  -- assign the pivot (center / origin) the initial position
-  self.sp[self.face][1] = {self.c / 2, self.r / 2}
-end 
-
-function Shape:on(p, x, y)
-  if p[1][1] == x or p[1][2] == y or p[2][1] == x or p[2][2] == y or p[3][1] == x or p[3][3] == y or p[4][1] == x or p[4][2] == y then 
-    return true 
-  end 
-  return false 
-end 
-
-function Shape:stop(grid)
-  local p = self:pos()
-  for _, line in ipairs(grid) do 
-    for _, box in ipairs(line) do 
-      if box.val == 1 then 
-        if self:on(p, box.x, box.y) then 
-          return true 
-        end 
-      end 
+function Shape:get_shape_bottom()
+  local pos = self:pos()
+  local y = -3
+  local x = -3
+  for _, p in ipairs(pos) do 
+    if p[2] > y then 
+      y = p[2]
+      x = p[1]
     end 
   end
-  return false  
+  return x, y -- +1 for the square/box length (because y is the upper left corner position)
 end 
 
 function Shape:add(grid)
-  local p = self:pos()
-  grid[p]
+  local pos = self:pos()
+  for _, p in ipairs(pos) do 
+    grid:set(p[2], p[1])
+  end 
+  return grid 
+end 
 
 function Shape:update(dt, grid)
   self.clock = self.clock + dt 
@@ -135,8 +136,12 @@ function Shape:update(dt, grid)
     self.sp[self.face][1][2] = self.sp[self.face][1][2] + 1
     self.clock = 0
   end
-  local p = self:pos()
-
+  local x, y = self:get_shape_bottom()
+  if y+1 > self.r or grid:filled(x, y) then 
+    grid = self:add(grid)
+    self:new_shape()
+  end
+  return grid 
 end 
 
 return Shape 
