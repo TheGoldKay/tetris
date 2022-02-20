@@ -50,7 +50,7 @@ function Shape:new(columns, rows, size)
   self.r = rows 
   self.size = size 
   self.clock = 0
-  self.timer = 0.2--0.7
+  self.timer = 0.1--0.7
   -- select a shape at random
   math.randomseed(os.time())
   self:new_shape()
@@ -112,14 +112,12 @@ end
 function Shape:get_shape_bottom()
   local pos = self:pos()
   local y = -3
-  local x = -3
   for _, p in ipairs(pos) do 
     if p[2] > y then 
       y = p[2]
-      x = p[1]
     end 
   end
-  return x, y -- +1 for the square/box length (because y is the upper left corner position)
+  return y + 1 -- +1 for the square/box length (because y is the upper left corner position)
 end 
 
 function Shape:add(grid)
@@ -130,14 +128,30 @@ function Shape:add(grid)
   return grid 
 end 
 
+function Shape:collide(grid)
+  local pos = self:pos()
+  for _, line in ipairs(grid.boxes) do 
+    for _, box in ipairs(line) do 
+      local x, y, val = box.x, box.y, box.val
+      for _, coo in ipairs(pos) do 
+        if coo[1] == x and coo[2] == y and val == 1 then 
+          return true 
+        end  
+      end 
+    end 
+  end 
+  return false 
+end 
+
+
 function Shape:update(dt, grid)
   self.clock = self.clock + dt 
   if self.clock >= self.timer then 
     self.sp[self.face][1][2] = self.sp[self.face][1][2] + 1
     self.clock = 0
   end
-  local x, y = self:get_shape_bottom()
-  if y+1 > self.r or grid:filled(x, y) then 
+  local y = self:get_shape_bottom()
+  if y  > self.r or self:collide(grid) then 
     grid = self:add(grid)
     self:new_shape()
   end
