@@ -1,13 +1,14 @@
+Conf = require "conf"
 local Grid = {}
 
 function Grid:new()
   local o = {}
   setmetatable(o, self)
   self.__index = self 
-  self.c = 14 -- grid's columns
-  self.r = 28 -- grid's rows 
-  local width = love.graphics.getWidth()
-  local height = love.graphics.getHeight()
+  self.c = Conf.columns -- grid's columns
+  self.r = Conf.rows -- grid's rows 
+  local width = Conf.width
+  local height = Conf.height
   self.size = width / self.c  
   -- making grid's boxes
   self.boxes = {}
